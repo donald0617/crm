@@ -39,6 +39,16 @@
   </servlet-mapping>
 
 
+  <servlet>
+    <servlet-name>ActivityController</servlet-name>
+    <servlet-class>com.shu.crm.workbench.web.controller.ActivityController</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ActivityController</servlet-name>
+    <url-pattern>/workbench/activity/getUserList.do</url-pattern>
+  </servlet-mapping>
+
+
   
   
 </web-app>

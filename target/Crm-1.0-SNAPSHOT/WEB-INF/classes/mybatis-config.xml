@@ -9,7 +9,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<typeAliases>
 
 		<package name="com.shu.crm.settings.domain"/>
-<!--		<package name="com.shu.crm.workbench.domain"/>-->
+		<package name="com.shu.crm.workbench.domain"/>
 
 	</typeAliases>
 	
@@ -29,7 +29,7 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 	<mappers>
 
 		<package name="com.shu.crm.settings.dao"/>
-<!--		<package name="com.shu.crm.workbench.domain"/>-->
+		<package name="com.shu.crm.workbench.dao"/>
 
 	</mappers>
 </configuration>
