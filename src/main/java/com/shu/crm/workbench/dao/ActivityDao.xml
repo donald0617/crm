@@ -5,7 +5,32 @@
 
 <mapper namespace="com.shu.crm.workbench.dao.ActivityDao">
 	
+<insert id="save">
+    insert into tbl_activity(
+        id,
+        owner,
+        name,
+        startDate,
+        endDate,
+        cost,
+        description,
+        createTime,
+        createBy
 
+
+    )
+    values (
+               #{id},
+               #{owner},
+               #{name},
+               #{startDate},
+               #{endDate},
+               #{cost},
+               #{description},
+               #{createTime},
+               #{createBy}
+           )
+</insert>
 </mapper>
 
 
