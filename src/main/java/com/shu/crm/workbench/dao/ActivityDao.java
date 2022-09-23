@@ -10,4 +10,6 @@ public interface ActivityDao {
     int save(Activity a);
 
     List<Activity> getActivityByCondition(HashMap<String, Object> map);
+
+    int getTotalByCondition(HashMap<String, Object> map);
 }

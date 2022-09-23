@@ -38,6 +38,8 @@
 
         </where>
 
+        order by
+
     </select>
 
     <insert id="save">
