@@ -74,6 +74,7 @@
                 $.ajax({
 
                     url:"workbench/activity/save.do",
+                    //需要发送的数据
                     data:{
                         "owner":$.trim($("#create-owner").val()),
                         "name":$.trim($("#create-name").val()),
@@ -98,9 +99,9 @@
                             //     jqueryi对象[下标]
                             // dom对象转换妫jquery对象：
                             //     $(dom)
-                            $("#activityAddForm")[0].reset();
+                            $("#activityAddForm")[0].reset();//重置
 
-                            $("#createActivityModal").modal("hide");
+                            $("#createActivityModal").modal("hide");//关闭模态窗口
                         }else {
                             alert("添加市场活动失败");
                         }

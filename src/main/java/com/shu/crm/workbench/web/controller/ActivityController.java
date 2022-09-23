@@ -81,7 +81,8 @@ public class ActivityController extends HttpServlet {
         UserService us = (UserService) ServiceFactory.getService(new UserServiceImpl());
         //调用方法获取用户列表
         List<User> uList = us.getUserList();
-        //将用户对象转换成json
+
+        //将用户对象转换成json（响应给前端的ajax）
         PrintJson.printJsonObj(response, uList);
 
 
