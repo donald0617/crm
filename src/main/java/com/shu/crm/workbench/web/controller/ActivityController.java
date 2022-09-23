@@ -4,6 +4,7 @@ import com.shu.crm.settings.domain.User;
 import com.shu.crm.settings.service.UserService;
 import com.shu.crm.settings.service.impl.UserServiceImpl;
 import com.shu.crm.utils.*;
+import com.shu.crm.vo.PaginationVO;
 import com.shu.crm.workbench.domain.Activity;
 import com.shu.crm.workbench.service.ActivityService;
 import com.shu.crm.workbench.service.impl.ActivityServiceImpl;
@@ -36,7 +37,47 @@ public class ActivityController extends HttpServlet {
             save(request, response);
         }
 
+        if ("/workbench/activity/pageList.do".equals(path)) {
+            pageList(request, response);
+        }
+
+
     }
+
+    private void pageList(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("执行到 controller 的 pageList 方法");
+
+        String name = request.getParameter("name");
+        String owner = request.getParameter("owner");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+
+        String pageNoStr = request.getParameter("pageNo");
+        int pageNo = Integer.valueOf(pageNoStr);
+
+        //每页展现的条数
+        String pageSizeStr = request.getParameter("pageSize");
+        int pageSize = Integer.valueOf(pageSizeStr);
+
+        //计算出略过的条数
+        int skipCount = (pageNo - 1) * pageSize;//固定写法，记住就行
+
+        //使用map封装所有拿到的数据
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        map.put("name",name);
+        map.put("owner",owner);
+        map.put("startDate",startDate);
+        map.put("endDate",endDate);
+        map.put("skipCount",skipCount);
+        map.put("pageSize",pageSize);
+        //获取相关业务的代理对象
+        ActivityService as = (ActivityService) ServiceFactory.getService(new ActivityServiceImpl());
+
+        PaginationVO<Activity> vo= as.pageList(map);
+
+        PrintJson.printJsonObj(response,vo);
+    }
+
 
     private void save(HttpServletRequest request, HttpServletResponse response) throws UnsupportedEncodingException {
         System.out.println("执行到 controller 的 save 方法");
@@ -72,7 +113,7 @@ public class ActivityController extends HttpServlet {
         //调用方法 保存成功返回一个布尔值
         boolean flag = as.save(a);//此处需要将取得的数据放入方法中，这里采用将数据放入对象传入
         //将布尔值编译成 json 穿给前端
-        PrintJson.printJsonFlag(response,flag);
+        PrintJson.printJsonFlag(response, flag);
 
     }
 

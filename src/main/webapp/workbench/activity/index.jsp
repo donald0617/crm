@@ -27,7 +27,7 @@
 
                 $(".time").datetimepicker({
                     minView: "month",
-                    language:  'zh-CN',
+                    language: 'zh-CN',
                     format: 'yyyy-mm-dd',
                     autoclose: true,
                     todayBtn: true,
@@ -73,23 +73,23 @@
             $("#saveBtn").click(function () {
                 $.ajax({
 
-                    url:"workbench/activity/save.do",
+                    url: "workbench/activity/save.do",
                     //需要发送的数据
-                    data:{
-                        "owner":$.trim($("#create-owner").val()),
-                        "name":$.trim($("#create-name").val()),
-                        "startDate":$.trim($("#create-startDate").val()),
-                        "endDate":$.trim($("#create-endDate").val()),
-                        "cost":$.trim($("#create-cost").val()),
-                        "description":$.trim($("#create-description").val())
+                    data: {
+                        "owner": $.trim($("#create-owner").val()),
+                        "name": $.trim($("#create-name").val()),
+                        "startDate": $.trim($("#create-startDate").val()),
+                        "endDate": $.trim($("#create-endDate").val()),
+                        "cost": $.trim($("#create-cost").val()),
+                        "description": $.trim($("#create-description").val())
                         //传过去的数据
 
                     },
-                    type:"post",
-                    dataType:"json",
-                    success:function (data){
+                    type: "post",
+                    dataType: "json",
+                    success: function (data) {
                         //返回的数据
-                        if (data.success){
+                        if (data.success) {
                             // 我们拿到了form表单的jquery对象
                             // 对于表单的jquery对象，提供了submit()方法让我们提交表单
                             // 但是表单的jquery对象，没有为我们提供reset()方法让我们重置表单（坑：idea为我们提示了有reset()方法）
@@ -102,12 +102,70 @@
                             $("#activityAddForm")[0].reset();//重置
 
                             $("#createActivityModal").modal("hide");//关闭模态窗口
-                        }else {
+                        } else {
                             alert("添加市场活动失败");
                         }
                     }
                 })
             })
+
+            //页面加载完毕触发刷新列表的方法
+            pageList(1, 2);
+
+            //为查询按钮绑定事件，出发方法
+            $("#searchBtn").click(function () {
+                pageList(1, 2);
+            })
+
+
+            function pageList(pageNo, pageSize) {//页码，每一页显示的个数
+                $.ajax({
+                    //请求路径
+                    url: "workbench/activity/pageList.do",
+                    //需要发送的数据
+                    data: {
+                        "pageNo": pageNo,
+                        "pageSize": pageSize,
+
+                        //取得查询条件的四个值
+                        "name": $.trim($("#search-name").val()),
+                        "owner": $.trim($("#search-owner").val()),
+                        "startDate": $.trim($("#search-startDate").val()),
+                        "endDate": $.trim($("#search-endDate").val())
+
+                    },
+                    //请求方式 get/post
+                    type: "get",
+                    //接收数据的格式
+                    dataType: "json",
+                    //执行成功所响应的内容（xmlHttp.readystate =4 && xmlHttp.status =200）
+                    success: function (data) {
+                        //需要得到的信息
+                        //1、市场活动信息[{市场活动1},{市场活动2}.....] 每一个市场活动都是一个json对象
+                        //2、查询信息的总条数
+                        //最后将这两个拼成一个json对象返回（json里面套json再套数组）
+                        //问：为什么要把所有的数据放入一个json对象传递？
+                        //达：function（data）的只是一个对象，所以需要拼成一个
+                        var html = "";
+
+                        // 传回来的数据 "dataList":[{市场话动1}，{2},{3}] 需要遍历出来
+                        // {"total":100,"dataList":[{市场话动1}，{2},{3}]}
+                        $.each(data.dataList,function (i,n) {
+                            html +='<tr class="active">';
+                            html +='<td><input type="checkbox" value="'+n.id+'"/></td>';
+                            html +='<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+n.name+'</a></td>';
+                            html +='<td>'+n.owner+'</td>';
+                            html +='<td>'+n.startDate+'</td>';
+                            html +='<td>'+n.endDate+'</td>';
+                            html +='</tr>';
+                        })
+
+                        $("#activityBody").html(html);
+
+                    }
+                })
+            }
+
         });
 
     </script>
@@ -263,14 +321,14 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">名称</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-name">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">所有者</div>
-                        <input class="form-control" type="text">
+                        <input class="form-control" type="text" id="search-owner">
                     </div>
                 </div>
 
@@ -278,17 +336,17 @@
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">开始日期</div>
-                        <input class="form-control" type="text" id="startTime"/>
+                        <input class="form-control" type="text" id="search-startDate"/>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="input-group">
                         <div class="input-group-addon">结束日期</div>
-                        <input class="form-control" type="text" id="endTime">
+                        <input class="form-control" type="text" id="search-endDate">
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-default">查询</button>
+                <button type="button" class="btn btn-default" id="searchBtn">查询</button>
 
             </form>
         </div>
@@ -321,23 +379,23 @@
                     <td>结束日期</td>
                 </tr>
                 </thead>
-                <tbody>
-                <tr class="active">
-                    <td><input type="checkbox"/></td>
-                    <td><a style="text-decoration: none; cursor: pointer;"
-                           onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>
-                    <td>zhangsan</td>
-                    <td>2020-10-10</td>
-                    <td>2020-10-20</td>
-                </tr>
-                <tr class="active">
-                    <td><input type="checkbox"/></td>
-                    <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a>
-                    </td>
-                    <td>zhangsan</td>
-                    <td>2020-10-10</td>
-                    <td>2020-10-20</td>
-                </tr>
+                <tbody id="activityBody">
+<%--                <tr class="active">--%>
+<%--                    <td><input type="checkbox"/></td>--%>
+<%--                    <td><a style="text-decoration: none; cursor: pointer;"--%>
+<%--                           onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>--%>
+<%--                    <td>zhangsan</td>--%>
+<%--                    <td>2020-10-10</td>--%>
+<%--                    <td>2020-10-20</td>--%>
+<%--                </tr>--%>
+<%--                <tr class="active">--%>
+<%--                    <td><input type="checkbox"/></td>--%>
+<%--                    <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='detail.jsp';">发传单</a>--%>
+<%--                    </td>--%>
+<%--                    <td>zhangsan</td>--%>
+<%--                    <td>2020-10-10</td>--%>
+<%--                    <td>2020-10-20</td>--%>
+<%--                </tr>--%>
                 </tbody>
             </table>
         </div>

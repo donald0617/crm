@@ -6,18 +6,20 @@
 </head>
 <body>
 <script type="text/javascript">
-  $.ajax({
+    $.ajax({
+        //请求路径
+        url: "",
+        //需要发送的数据
+        data: {},
+        //请求方式 get/post
+        type: "",
+        //接收数据的格式
+        dataType: "json",
+        //执行成功所响应的内容（xmlHttp.readystate =4 && xmlHttp.status =200）
+        success: function (data) {
 
-    url:"",
-    data:{
-
-    },
-    type:"",
-    dataType:"json",
-    success:function (data){
-
-    }
-  })
+        }
+    })
 </script>
 
 </body>
